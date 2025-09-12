@@ -10,9 +10,14 @@ const vaccineRoutes = require('./routes/vaccineRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 
+const responseHandler = require('./middlewares/responseHandler')
+const errorHandler = require('./middlewares/errorHandler');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use(responseHandler);
 
 app.get('/health',(req,res)=>res.json({status:'ok'}));
 app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerSpec));
@@ -21,10 +26,7 @@ app.use('/api/vaccines',authMiddleware,vaccineRoutes);
 app.use('/api/stock',authMiddleware,stockRoutes);
 app.use('/api/applications',authMiddleware,applicationRoutes);
 
-app.use((err,req,res,next)=>{
-  console.error(err);
-  res.status(err.status||500).json({error:err.message||'Internal Server Error'});
-});
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
-connectDB().then(()=>app.listen(PORT,()=>console.log(`🚀 Servidor rodando na porta ${PORT}`)));
+connectDB().then(()=>app.listen(PORT,()=>console.log(`Servidor rodando na porta ${PORT}`)));
