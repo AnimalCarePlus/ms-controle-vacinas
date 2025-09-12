@@ -1,0 +1,31 @@
+{
+  "name": "ms-controle-vacina",
+  "version": "1.0.0",
+  "description": "Microsservico para controle de vacinas em node",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnimalCarePlus/ms-controle-vacinas.git"
+  },
+  "author": "Richard Ricarte",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnimalCarePlus/ms-controle-vacinas/issues"
+  },
+  "homepage": "https://github.com/AnimalCarePlus/ms-controle-vacinas#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
