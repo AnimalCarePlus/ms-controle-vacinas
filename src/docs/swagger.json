@@ -1,0 +1,142 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MS Controle de Vacinas",
+    "version": "1.0.0",
+    "description": "Microsserviço para controle de vacinas, estoque e aplicação"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001/api",
+      "description": "Servidor local"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Vaccine": {
+        "type": "object",
+        "required": ["name", "manufacturer", "dosesRequired"],
+        "properties": {
+          "name": { "type": "string", "example": "Vacina Quádrupla Canina" },
+          "manufacturer": { "type": "string", "example": "LabVet" },
+          "description": { "type": "string", "example": "Protege cães contra doenças" },
+          "dosesRequired": { "type": "integer", "example": 2 }
+        }
+      },
+      "StockItem": {
+        "type": "object",
+        "required": ["vaccineId", "batchNumber", "expirationDate", "quantity"],
+        "properties": {
+          "vaccineId": { "type": "string", "example": "64f3d1a4c9f9a0b1e2d12345" },
+          "batchNumber": { "type": "string", "example": "L20250918" },
+          "expirationDate": { "type": "string", "format": "date", "example": "2025-12-31" },
+          "quantity": { "type": "integer", "example": 50 }
+        }
+      },
+      "Application": {
+        "type": "object",
+        "required": ["animalId", "vaccineId", "batchNumber", "appliedBy", "dose"],
+        "properties": {
+          "animalId": { "type": "string", "example": "66f3d1a4c9f9a0b1e2d12345" },
+          "vaccineId": { "type": "string", "example": "64f3d1a4c9f9a0b1e2d12345" },
+          "batchNumber": { "type": "string", "example": "L20250918" },
+          "appliedBy": { "type": "string", "example": "Dr. João Silva" },
+          "dose": { "type": "string", "example": "1ml" },
+          "notes": { "type": "string", "example": "Aplicada sem reações adversas" }
+        }
+      }
+    }
+  },
+  "security": [{ "BearerAuth": [] }],
+  "paths": {
+    "/vaccines": {
+      "get": {
+        "summary": "Listar todas as vacinas",
+        "responses": {
+          "200": {
+            "description": "Lista de vacinas",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Vaccine" } } } }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar nova vacina",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Vaccine" } } }
+        },
+        "responses": { "201": { "description": "Vacina criada com sucesso" } }
+      }
+    },
+    "/vaccines/{id}": {
+      "get": {
+        "summary": "Obter vacina por ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Vacina encontrada" }, "404": { "description": "Vacina não encontrada" } }
+      },
+      "put": {
+        "summary": "Atualizar vacina",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Vaccine" } } } },
+        "responses": { "200": { "description": "Vacina atualizada" }, "404": { "description": "Vacina não encontrada" } }
+      },
+      "delete": {
+        "summary": "Deletar vacina",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Vacina removida" }, "404": { "description": "Vacina não encontrada" } }
+      }
+    },
+    "/stock": {
+      "get": {
+        "summary": "Listar estoque",
+        "responses": { "200": { "description": "Lista de itens no estoque" } }
+      },
+      "post": {
+        "summary": "Adicionar item ao estoque",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StockItem" } } } },
+        "responses": { "201": { "description": "Item criado no estoque" } }
+      }
+    },
+    "/stock/{id}": {
+      "put": {
+        "summary": "Atualizar item do estoque",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StockItem" } } } },
+        "responses": { "200": { "description": "Item atualizado" }, "404": { "description": "Item não encontrado" } }
+      },
+      "delete": {
+        "summary": "Deletar item do estoque",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Item removido" }, "404": { "description": "Item não encontrado" } }
+      }
+    },
+    "/stock/alerts/low-stock": {
+      "get": {
+        "summary": "Alertas de baixo estoque",
+        "parameters": [{ "name": "threshold", "in": "query", "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Itens com estoque baixo" } }
+      }
+    },
+    "/stock/alerts/near-expiry": {
+      "get": {
+        "summary": "Alertas de validade próxima",
+        "parameters": [{ "name": "days", "in": "query", "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Itens perto do vencimento" } }
+      }
+    },
+    "/applications/apply": {
+      "post": {
+        "summary": "Aplicar vacina em animal",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Application" } } } },
+        "responses": { "201": { "description": "Vacina aplicada com sucesso" }, "400": { "description": "Erro de validação ou estoque" }, "404": { "description": "Lote não encontrado" } }
+      }
+    }
+  }
+}

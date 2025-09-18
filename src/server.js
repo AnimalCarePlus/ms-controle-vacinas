@@ -3,8 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authMiddleware = require('./middlewares/auth');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./config/swagger');
+
 
 const vaccineRoutes = require('./routes/vaccineRoutes');
 const stockRoutes = require('./routes/stockRoutes');
@@ -13,14 +12,21 @@ const applicationRoutes = require('./routes/applicationRoutes');
 const responseHandler = require('./middlewares/responseHandler')
 const errorHandler = require('./middlewares/errorHandler');
 
+const swaggerSetup = require('./config/swagger');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
 app.use(responseHandler);
 
 app.get('/health',(req,res)=>res.json({status:'ok'}));
-app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerSpec));
+
+swaggerSetup(app);
+
+
 
 app.use('/api/vaccines',authMiddleware,vaccineRoutes);
 app.use('/api/stock',authMiddleware,stockRoutes);
