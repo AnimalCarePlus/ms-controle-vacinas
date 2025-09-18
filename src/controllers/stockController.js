@@ -1,13 +1,19 @@
+const { createStockItem, getLowStock, getNearExpiry } = require('../services/stockService');
 const StockItem = require('../models/StockItem');
-const { getLowStock, getNearExpiry } = require('../services/stockService');
 
-exports.getAllStock = async (req,res,next)=>{
-  try{ res.json(await StockItem.find().populate('vaccine')); }
-  catch(err){ next(err); }
+
+exports.createStock = async (req, res, next) => {
+  try {
+    const stock = await createStockItem(req.body);
+    res.status(201).json(stock);
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.createStock = async (req,res,next)=>{
-  try{ res.status(201).json(await StockItem.create(req.body)); }
+
+exports.getAllStock = async (req,res,next)=>{
+  try{ res.json(await StockItem.find().populate('vaccineId')); }
   catch(err){ next(err); }
 };
 

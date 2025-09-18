@@ -1,7 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controller = require('../controllers/applicationController');
+const controller = require("../controllers/applicationController");
+const { validate } = require("../middlewares/validate");
+const { applicationSchema } = require("../validators/applicationValidator");
 
-router.post('/apply', controller.applyVaccine);
+router.post("/apply", validate(applicationSchema), controller.applyVaccine);
 
 module.exports = router;
