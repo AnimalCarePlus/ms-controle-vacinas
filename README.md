@@ -14,6 +14,7 @@ Cria um arquivo chamado `.env` e escreve essas coisas aí, se conseguir:
 PORT=3001
 MONGO_URI=mongodb://localhost:27017/seu_banco
 JWT_SECRET=sua_chave_super_ultra_secreta
+AUTH_VALIDATE_URL=urldaapi
 ```
 
 > Se esquecer de mudar alguma coisa, boa sorte. 💀🔥
