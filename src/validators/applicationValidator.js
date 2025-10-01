@@ -1,7 +1,10 @@
 const Joi = require("joi");
 
 const applicationSchema = Joi.object({
-  animalId: Joi.string().hex().length(24).required(),
+  animalId: Joi.alternatives().try(
+    Joi.string().hex().length(24),  
+    Joi.number().integer()           
+  ).required(),
   vaccineId: Joi.string().hex().length(24).required(),
   batchNumber: Joi.string().min(1).max(30).required(),
   dose: Joi.string().min(1).max(50).optional(),
