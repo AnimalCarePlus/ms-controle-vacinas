@@ -10,6 +10,8 @@ const applicationSchema = Joi.object({
   dose: Joi.string().min(1).max(50).optional(),
   appliedBy: Joi.string().min(3).max(100).required(),
   notes: Joi.string().max(500).optional(),
+  imagem_url: Joi.string().max(500).optional(),
+
 });
 
 module.exports = { applicationSchema };

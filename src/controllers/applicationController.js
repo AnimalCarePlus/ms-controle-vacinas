@@ -51,7 +51,7 @@ exports.applyVaccine = async (req, res, next) => {
         `${PRONTUARIO_URL}/api/animais/${animalIdInt}/exames`,
         {
           descricao: `Vacina aplicada: ${value.vaccineId}, lote: ${value.batchNumber}, dose: ${value.dose}`,
-          imagem_url: value.imageUrl || "", 
+          imagem_url: value.imagem_url || "", 
         },
         {
           headers: { Authorization: req.headers.authorization },
